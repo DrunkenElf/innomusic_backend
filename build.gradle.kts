@@ -53,6 +53,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
 
+    implementation("com.zaxxer:HikariCP:3.4.5")
+
     implementation("org.postgresql:postgresql:42.2.12")
 
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")

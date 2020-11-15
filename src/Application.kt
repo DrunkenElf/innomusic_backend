@@ -1,5 +1,7 @@
 package com.inno.music
 
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import io.ktor.application.*
 import io.ktor.response.*
 import io.ktor.request.*
@@ -15,6 +17,13 @@ import io.ktor.features.*
 import org.slf4j.event.*
 import io.ktor.server.engine.*
 import io.ktor.gson.*
+import org.jetbrains.exposed.sql.Database
+
+fun initDB(){
+    val config = HikariConfig("/hikari.properties")
+    val ds = HikariDataSource(config)
+    Database.connect(ds)
+}
 
 fun Application.main() {
     install(Locations) {
@@ -52,10 +61,23 @@ fun Application.main() {
 
     install(ContentNegotiation) {
         gson {
+            setPrettyPrinting()
         }
     }
 
-    routing {
+    install(StatusPages) {
+        exception<AuthenticationException> { cause ->
+            call.respond(HttpStatusCode.Unauthorized)
+        }
+        exception<AuthorizationException> { cause ->
+            call.respond(HttpStatusCode.Forbidden)
+        }
+
+    }
+    initDB()
+
+
+ /*   routing {
         get("/") {
             call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
         }
@@ -116,7 +138,7 @@ fun Application.main() {
         get("/json/gson") {
             call.respond(mapOf("hello" to "world"))
         }
-    }
+    }*/
 }
 
 @Location("/location/{name}")

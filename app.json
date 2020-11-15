@@ -2,5 +2,5 @@
   "name": "backend for innomusic",
   "description": "Server to check buffering mp3 files",
   "image": "static/ktor_logo.svg",
-  "addons": [ ]
+  "addons": [ "heroku-postgresql" ]
 }
