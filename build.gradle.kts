@@ -2,6 +2,10 @@ import org.jetbrains.kotlin.gradle.dsl.Coroutines
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
+val exposed_version: String by project
+
+
+
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
@@ -10,17 +14,22 @@ defaultTasks("clean", "build")
 
 plugins {
     application
+    id("java-library")
+    id("java")
     kotlin("jvm") version "1.4.20-RC"
     id("com.github.johnrengelman.shadow") version "6.1.0"
 }
+
 
 
 group = "com.inno.music"
 version = "0.0.1"
 
 application{
-    mainClassName = ("io.ktor.server.netty.EngineMain")
+    //mainClassName = ("io.ktor.server.netty.EngineMain")
+    mainClass.set("io.ktor.server.netty.EngineMain")
 }
+
 
 repositories {
     mavenLocal()
@@ -39,6 +48,13 @@ dependencies {
     implementation("io.ktor:ktor-server-host-common:$ktor_version")
     implementation("io.ktor:ktor-locations:$ktor_version")
     implementation("io.ktor:ktor-gson:$ktor_version")
+
+    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
+
+    implementation("org.postgresql:postgresql:42.2.12")
+
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
 }
 
@@ -55,7 +71,7 @@ tasks {
         this.
         mergeServiceFiles()
         manifest {
-            attributes(mapOf("Main-Class" to application.mainClassName))
+            attributes(mapOf("Main-Class" to application.mainClass.get()))
         }
     }
 }
