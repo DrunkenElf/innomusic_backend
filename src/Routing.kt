@@ -1,18 +1,23 @@
 package com.inno.music
 
+import User
 import UserController
+import deleteAll
+import download
 import io.ktor.application.*
-import io.ktor.auth.*
-import io.ktor.http.*
+import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import kotlinx.html.FormEncType
-import kotlinx.html.body
-import kotlinx.html.form
-import kotlinx.html.*
-import kotlinx.html.stream.createHTML
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import upload
 
+@Location("/audio/upload")
+class Upload()
+
+@Location("/audio/download/{title}")
+class Download(val title: String)
 
 fun Application.routing(){
     routing {
@@ -21,11 +26,12 @@ fun Application.routing(){
         }
         route("/api"){
             user()
-            audio()
         }
+        upload()
 
+        download()
 
-
+        deleteAll()
 
     }
 }
@@ -43,18 +49,15 @@ fun Route.user() {
                 call.respond("No such user or empty param")
         }
         post("/login_post"){
-            val user = call.receiveParameters()
-
-            call.respond(user.entries())
+            //val user = call.receiveParameters().entries().toString().parseUrlEncodedParameters()
+            val user = withContext(Dispatchers.IO){ call.receive(User::class) }
+            //println(user)
+            call.respond(userController.create(user))
         }
 
 
     }
 }
 
-fun Route.audio(){
-    route("audio"){
 
-    }
-}
 

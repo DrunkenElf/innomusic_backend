@@ -1,10 +1,8 @@
-package com.inno.music
-
 data class User(
-    val id: Int = -1,
-    val username: String = "",
-    val password: String = "",
-    val email: String = "",
+    val id: Int,
+    val username: String,
+    val password: String,
+    val email: String,
 )
 data class UserPref(
     val userId: Int? = -1,
@@ -12,11 +10,11 @@ data class UserPref(
 )
 
 data class AudioFile(
-    val id: Int = -1,
-    val title: String? = null,
-    val type: AudioType,
-    val path: String? = null,
-    val data: ByteArray? = null,
+    var id: Int = -1,
+    var title: String = "",
+    val type: AudioType = AudioType.SONG,
+    val path: String = "",
+    var data: ByteArray? = null,
 )
 
 data class SongArtist(

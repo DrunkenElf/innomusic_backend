@@ -49,17 +49,13 @@ fun Application.main() {
     }
 
     install(DataConversion){
-        convert<User> {
+        /*convert<User> {
             
             decode { values, type ->
-                values
             }
-        }
+        }*/
     }
 
-    install(DefaultHeaders) {
-        header("X-Engine", "Ktor") // will send this header with each response
-    }
 
     install(ShutDownUrl.ApplicationCallFeature) {
         // The URL that will be intercepted (you can also use the application.conf's ktor.deployment.shutdown.url key)
@@ -177,3 +173,5 @@ fun CommonAttributeGroupFacade.style(builder: CSSBuilder.() -> Unit) {
 suspend inline fun ApplicationCall.respondCss(builder: CSSBuilder.() -> Unit) {
     this.respondText(CSSBuilder().apply(builder).toString(), ContentType.Text.CSS)
 }
+
+suspend fun ApplicationCall.respondRedirect(location: Any) = respondRedirect(url(location), permanent = false)
