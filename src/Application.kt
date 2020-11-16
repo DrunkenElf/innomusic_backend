@@ -21,12 +21,13 @@ import io.ktor.gson.*
 import org.jetbrains.exposed.sql.Database
 
 fun initDB(){
+
     val hikariConfig = HikariConfig()
 
     val DATABASE_URL = System.getenv("DATABASE_URL")
 
 
-    val credentialsAndConnectionString = DATABASE_URL.split("@")
+        val credentialsAndConnectionString = DATABASE_URL.split("@")
         val credentials = credentialsAndConnectionString[0].split("postgres://")[1].split(":")
         val connectionString = credentialsAndConnectionString[1]
         hikariConfig.jdbcUrl = "jdbc:postgresql://$connectionString?sslmode=require"
@@ -36,6 +37,7 @@ fun initDB(){
 
 
     val ds = HikariDataSource(hikariConfig)
+    Database.connect(ds)
 }
 
 fun Application.main() {
