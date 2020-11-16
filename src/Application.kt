@@ -3,6 +3,7 @@ package com.inno.music
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.application.*
+import io.ktor.auth.*
 import io.ktor.response.*
 import io.ktor.request.*
 import io.ktor.routing.*
@@ -28,6 +29,7 @@ fun initDB(){
 fun Application.main() {
     install(Locations) {
     }
+    install(Authentication){}
 
     install(Compression) {
         gzip {
@@ -46,7 +48,14 @@ fun Application.main() {
         filter { call -> call.request.path().startsWith("/") }
     }
 
-    install(DataConversion)
+    install(DataConversion){
+        convert<User> {
+            
+            decode { values, type ->
+                values
+            }
+        }
+    }
 
     install(DefaultHeaders) {
         header("X-Engine", "Ktor") // will send this header with each response
