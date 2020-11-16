@@ -26,8 +26,8 @@ group = "com.inno.music"
 version = "0.0.1"
 
 application{
-    //mainClassName = ("io.ktor.server.netty.EngineMain")
-    mainClass.set("io.ktor.server.netty.EngineMain")
+    mainClassName = ("io.ktor.server.netty.EngineMain")
+    //mainClass.set("io.ktor.server.netty.EngineMain")
 }
 
 
@@ -70,10 +70,9 @@ sourceSets["test"].resources.srcDirs("testresources")
 tasks {
     named<ShadowJar>("shadowJar") {
         archiveBaseName.set(rootProject.name)
-        this.
         mergeServiceFiles()
         manifest {
-            attributes(mapOf("Main-Class" to application.mainClass.get()))
+            attributes(mapOf("Main-Class" to application.mainClassName))
         }
     }
 }
