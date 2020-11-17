@@ -135,6 +135,13 @@ fun Application.main() {
     }
     initDB()
 
+    intercept(ApplicationCallPipeline.Call){
+        println("intercept call: request uri = "+call.request.uri)
+        println("intercept call: response = "+call.response)
+        println("intercept call: parameters = "+call.parameters.entries())
+        println("intercept call: attributes = "+call.attributes)
+        println("intercept call: callId = "+call.callId)
+    }
 
 
  /*   routing {

@@ -32,7 +32,7 @@ fun Route.upload(){
                     h2 { +"Upload video" }
 
                     form(
-                        call.url(Upload()),
+                        call.url(Upload() ),
                         classes = "pure-form-stacked",
                         encType = FormEncType.multipartFormData,
                         method = FormMethod.post
@@ -55,6 +55,7 @@ fun Route.upload(){
         }
 
         post<Upload>{
+
                 val multipart = call.receiveMultipart()
                 val audioController = AudioController()
 
