@@ -29,21 +29,38 @@ fun initDB(){
 
     val hikariConfig = HikariConfig()
 
-    //val DATABASE_URL = System.getenv("DATABASE_URL")
-    val DATABASE_URL = "postgres://psxlgzckxxxnib:a57fd2d99ac53df4a5d84e70cce5f79f674e2b7ab7a20f9f21fd2c6db82738c4@ec2-52-213-173-172.eu-west-1.compute.amazonaws.com:5432/doe7suh35eo0j"
+    val DATABASE_URL = System.getenv("DATABASE_URL")
 
 
-        val credentialsAndConnectionString = DATABASE_URL.split("@")
-        val credentials = credentialsAndConnectionString[0].split("postgres://")[1].split(":")
-        val connectionString = credentialsAndConnectionString[1]
-        hikariConfig.jdbcUrl = "jdbc:postgresql://$connectionString?sslmode=require"
-        hikariConfig.driverClassName = "org.postgresql.Driver"
-        hikariConfig.username = credentials[0]
-        hikariConfig.password = credentials[1]
+    val credentialsAndConnectionString = DATABASE_URL.split("@")
+    val credentials = credentialsAndConnectionString[0].split("postgres://")[1].split(":")
+    val connectionString = credentialsAndConnectionString[1]
+    hikariConfig.jdbcUrl = "jdbc:postgresql://$connectionString?sslmode=require"
+    hikariConfig.driverClassName = "org.postgresql.Driver"
+    hikariConfig.username = credentials[0]
+    hikariConfig.password = credentials[1]
 
 
     val ds = HikariDataSource(hikariConfig)
-    Database.connect(ds)
+
+
+    /*  val hikariConfig = HikariConfig()
+
+      //val DATABASE_URL = System.getenv("DATABASE_URL")
+      val DATABASE_URL = "postgres://psxlgzckxxxnib:a57fd2d99ac53df4a5d84e70cce5f79f674e2b7ab7a20f9f21fd2c6db82738c4@ec2-52-213-173-172.eu-west-1.compute.amazonaws.com:5432/doe7suh35eo0j"
+
+
+          val credentialsAndConnectionString = DATABASE_URL.split("@")
+          val credentials = credentialsAndConnectionString[0].split("postgres://")[1].split(":")
+          val connectionString = credentialsAndConnectionString[1]
+          hikariConfig.jdbcUrl = "jdbc:postgresql://$connectionString?sslmode=require"
+          hikariConfig.driverClassName = "org.postgresql.Driver"
+          hikariConfig.username = credentials[0]
+          hikariConfig.password = credentials[1]
+
+
+      val ds = HikariDataSource(hikariConfig)
+      Database.connect(ds)*/
 }
 
 
