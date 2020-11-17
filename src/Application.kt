@@ -35,7 +35,7 @@ fun initDB(){
     val credentialsAndConnectionString = DATABASE_URL.split("@")
     val credentials = credentialsAndConnectionString[0].split("postgres://")[1].split(":")
     val connectionString = credentialsAndConnectionString[1]
-    hikariConfig.jdbcUrl = "jdbc:postgresql://$connectionString?sslmode=require"
+    hikariConfig.jdbcUrl = "jdbc:postgresql://$connectionString"
     hikariConfig.driverClassName = "org.postgresql.Driver"
     hikariConfig.username = credentials[0]
     hikariConfig.password = credentials[1]
@@ -65,7 +65,7 @@ fun initDB(){
 
 
 fun Application.main() {
-    install(HttpsRedirect){}
+    uninstall(HttpsRedirect)
     install(CORS){
         method(HttpMethod.Options)
         method(HttpMethod.Get)
@@ -137,10 +137,14 @@ fun Application.main() {
 
     intercept(ApplicationCallPipeline.Call){
         println("intercept call: request uri = "+call.request.uri)
+        println("intercept call: request path = "+call.request.path())
+        println("intercept call: request method = "+call.request.httpMethod)
         println("intercept call: response = "+call.response)
         println("intercept call: parameters = "+call.parameters.entries())
         println("intercept call: attributes = "+call.attributes)
         println("intercept call: callId = "+call.callId)
+
+
     }
 
 
