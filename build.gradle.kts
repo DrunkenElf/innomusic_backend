@@ -52,8 +52,6 @@ dependencies {
 
     implementation("kr.jadekim:ktor-extension:1.0.0")
 
-    implementation("org.jetbrains.ktor:1.4.2")
-
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
