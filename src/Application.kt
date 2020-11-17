@@ -42,7 +42,7 @@ fun initDB(){
 
 
     val ds = HikariDataSource(hikariConfig)
-
+    Database.connect(ds)
 
     /*  val hikariConfig = HikariConfig()
 
