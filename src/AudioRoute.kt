@@ -32,7 +32,7 @@ fun Route.upload(){
                     h2 { +"Upload audio" }
 
                     form(
-                        "/${upload.type}",
+                        "/audio/upload/${upload.type}",
                         classes = "pure-form-stacked",
                         encType = FormEncType.multipartFormData,
                         method = FormMethod.post,
@@ -54,7 +54,7 @@ fun Route.upload(){
             }
         }
 
-        post("/post"){
+        post("audio/upload/post"){
                 val multipart = call.receiveMultipart()
                 val audioController = AudioController()
 
@@ -91,7 +91,7 @@ fun Route.upload(){
                         call.respondText { "Error" }
                 }
         }
-    post("/form") {
+    post("audio/upload/form") {
         val multipart = call.receiveMultipart()
         call.respondTextWriter {
             if (!call.request.isMultipart()) {
