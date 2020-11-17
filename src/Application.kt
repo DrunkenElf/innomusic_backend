@@ -18,13 +18,19 @@ import io.ktor.features.*
 import org.slf4j.event.*
 import io.ktor.server.engine.*
 import io.ktor.gson.*
+import io.ktor.network.tls.certificates.*
+import io.ktor.network.tls.extensions.*
 import org.jetbrains.exposed.sql.Database
+import java.io.File
+import java.security.KeyStore
+import java.time.Duration
 
 fun initDB(){
 
     val hikariConfig = HikariConfig()
 
-    val DATABASE_URL = System.getenv("DATABASE_URL")
+    //val DATABASE_URL = System.getenv("DATABASE_URL")
+    val DATABASE_URL = "postgres://psxlgzckxxxnib:a57fd2d99ac53df4a5d84e70cce5f79f674e2b7ab7a20f9f21fd2c6db82738c4@ec2-52-213-173-172.eu-west-1.compute.amazonaws.com:5432/doe7suh35eo0j"
 
 
         val credentialsAndConnectionString = DATABASE_URL.split("@")
@@ -40,10 +46,27 @@ fun initDB(){
     Database.connect(ds)
 }
 
+
 fun Application.main() {
+    install(HttpsRedirect){}
+    install(CORS){
+        method(HttpMethod.Options)
+        method(HttpMethod.Get)
+        method(HttpMethod.Post)
+        method(HttpMethod.Put)
+        method(HttpMethod.Delete)
+        method(HttpMethod.Patch)
+        header(HttpHeaders.Authorization)
+        anyHost()
+        allowCredentials = true
+        allowNonSimpleContentTypes = true
+        maxAge = Duration.ofDays(1)
+    }
     install(Locations) {
     }
     install(Authentication){}
+
+    install(ForwardedHeaderSupport)
 
     install(Compression) {
         gzip {
@@ -94,6 +117,7 @@ fun Application.main() {
 
     }
     initDB()
+
 
 
  /*   routing {

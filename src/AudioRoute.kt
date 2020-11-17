@@ -12,7 +12,9 @@ import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.util.*
 import io.ktor.util.url
+
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import kotlinx.css.form
 import kotlinx.css.h2
@@ -53,7 +55,6 @@ fun Route.upload(){
         }
 
         post<Upload>{
-            withContext(Dispatchers.IO){
                 val multipart = call.receiveMultipart()
                 val audioController = AudioController()
 
@@ -69,10 +70,15 @@ fun Route.upload(){
                         is PartData.FileItem -> {
                             val ext = File(part.originalFileName).extension.also { println("ext: $it") }
                             println("origfilename: "+part.originalFileName)
-                            audio = audio?.copy(title = part.originalFileName.toString(), data = part.streamProvider.invoke().readBytes())
+                            async(Dispatchers.IO) {
+                                audio = audio?.copy(
+                                    title = part.originalFileName.toString(),
+                                    data = part.streamProvider.invoke().readBytes()
+                                )
+                            }.await()
                         }
                         is PartData.BinaryItem -> {
-
+                            println("binary item")
                         }
                     }
                     part.dispose
@@ -80,10 +86,7 @@ fun Route.upload(){
                 audio?.let {
                     println("TITLE: ${audio?.title}")
                     audioController.upload(audio!!)
-                    call.respondRedirect("/audio/list")
                 }
-
-            }
         }
 }
 fun Route.download(){

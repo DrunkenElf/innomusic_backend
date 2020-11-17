@@ -50,6 +50,10 @@ dependencies {
     implementation("io.ktor:ktor-locations:$ktor_version")
     implementation("io.ktor:ktor-gson:$ktor_version")
 
+    implementation("kr.jadekim:ktor-extension:1.0.0")
+
+    implementation("org.jetbrains.ktor:1.4.2")
+
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
@@ -58,6 +62,7 @@ dependencies {
 
     implementation("org.postgresql:postgresql:42.2.12")
 
+    implementation("io.ktor:ktor-network-tls-certificates:$ktor_version")
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
 }
 
