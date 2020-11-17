@@ -13,8 +13,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import upload
 
-@Location("/audio/upload")
-class Upload()
+@Location("/audio/upload/{type}")
+class Upload(val type: String)
 
 @Location("/audio/download/{title}")
 class Download(val title: String)

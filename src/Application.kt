@@ -65,7 +65,6 @@ fun initDB(){
 
 
 fun Application.main() {
-    uninstall(HttpsRedirect)
     install(CORS){
         method(HttpMethod.Options)
         method(HttpMethod.Get)
@@ -98,7 +97,7 @@ fun Application.main() {
     install(AutoHeadResponse)
 
     install(CallLogging) {
-        level = Level.INFO
+        level = Level.DEBUG
         filter { call -> call.request.path().startsWith("/") }
     }
 

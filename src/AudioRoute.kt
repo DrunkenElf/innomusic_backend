@@ -29,13 +29,13 @@ fun Route.upload(){
                 }
 
                 body{
-                    h2 { +"Upload video" }
+                    h2 { +"Upload audio" }
 
                     form(
-                        call.url(Upload()),
+                        "/${upload.type}",
                         classes = "pure-form-stacked",
                         encType = FormEncType.multipartFormData,
-                        method = FormMethod.post
+                        method = FormMethod.post,
                     ) {
                         acceptCharset = "utf-8"
 
@@ -54,8 +54,7 @@ fun Route.upload(){
             }
         }
 
-        post<Upload>{
-
+        post("/post"){
                 val multipart = call.receiveMultipart()
                 val audioController = AudioController()
 
@@ -71,12 +70,11 @@ fun Route.upload(){
                         is PartData.FileItem -> {
                             val ext = File(part.originalFileName).extension.also { println("ext: $it") }
                             println("origfilename: "+part.originalFileName)
-                            async(Dispatchers.IO) {
-                                audio = audio?.copy(
-                                    title = part.originalFileName.toString(),
-                                    data = part.streamProvider.invoke().readBytes()
-                                )
-                            }.await()
+
+                            audio = audio?.copy(
+                                title = part.originalFileName.toString(),
+                                data = part.streamProvider.invoke().readBytes()
+                            )
                         }
                         is PartData.BinaryItem -> {
                             println("binary item")
@@ -84,12 +82,34 @@ fun Route.upload(){
                     }
                     part.dispose
                 }
-                audio?.let {
+                audio.let {
                     println("TITLE: ${audio?.title}")
                     audioController.upload(audio!!)
-                    call.respondText { "Uploaded" }
+                    if (audio?.data != null)
+                        call.respondText { "Uploaded" }
+                    else
+                        call.respondText { "Error" }
                 }
         }
+    post("/form") {
+        val multipart = call.receiveMultipart()
+        call.respondTextWriter {
+            if (!call.request.isMultipart()) {
+                appendln("Not a multipart request")
+            } else {
+                while (true) {
+                    val part = multipart.readPart() ?: break
+                    when (part) {
+                        is PartData.FormItem ->
+                            appendln("FormItem: ${part.name} = ${part.value}")
+                        is PartData.FileItem ->
+                            appendln("FileItem: ${part.name} -> ${part.originalFileName} of ${part.contentType}")
+                    }
+                    part.dispose()
+                }
+            }
+        }
+    }
 }
 fun Route.download(){
     get<Download> {
