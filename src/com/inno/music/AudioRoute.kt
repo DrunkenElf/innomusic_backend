@@ -17,7 +17,7 @@ import java.io.File
 val domain = "http://innomusic.herokuapp.com/audio/"
 
 fun Route.upload() {
-    get("com.inno.music.upload") {
+    get("upload") {
         call.respondHtml {
             head {
                 title("Upload file")
@@ -45,7 +45,7 @@ fun Route.upload() {
         }
     }
 
-    post("com.inno.music.upload") {
+    post("upload") {
         val multipart = call.receiveMultipart()
         val audioController = AudioController()
 
@@ -91,7 +91,7 @@ fun Route.upload() {
 }
 
 fun Route.download() {
-    get("com.inno.music.download/{id}") {
+    get("download/{id}") {
         val id = (call.parameters["id"] ?: "0").toInt()
         val audioController = AudioController()
         val audio = audioController.download(id)
@@ -149,7 +149,7 @@ fun Route.deleteAll() {
         withContext(Dispatchers.IO) {
             val audioController = AudioController()
             audioController.removeAll()
-            call.respondRedirect("com.inno.music.upload")
+            call.respondRedirect("upload")
         }
     }
 }
