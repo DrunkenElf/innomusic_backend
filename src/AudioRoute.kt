@@ -103,12 +103,12 @@ fun Route.download() {
             header(HttpHeaders.ContentDisposition,
                 ContentDisposition.Attachment
                     .withParameter(ContentDisposition.Parameters.FileName,
-                        domain+"download/dir/${id}").toString())
-        }.call.respond(audio.copy(path = domain+"download/dir/${id}"))
+                        domain+"direct/${id}").toString())
+        }.call.respond(audio.copy(path = domain+"direct/${id}"))
 
     }
 
-    get("/audio/download/dir/{id}"){
+    get("direct/{id}"){
         withContext(Dispatchers.IO){
             val id = (call.parameters["id"] ?: "0").toInt()
             val audioController = AudioController()
