@@ -1,3 +1,5 @@
+package com.inno.music
+
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -34,7 +36,7 @@ class UserController {
 
     fun update(id: Int, newUser: User): User {
         transaction {
-            Users.update({Users.id eq id}){
+            Users.update({ Users.id eq id}){
                 it[username] = newUser.username
                 it[email] = newUser.email
                 it[password] = newUser.password

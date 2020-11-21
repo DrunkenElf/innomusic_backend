@@ -1,3 +1,5 @@
+package com.inno.music
+
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -5,7 +7,7 @@ class AudioController {
 
     suspend fun upload(audio: AudioFile): Int {
         return transaction {
-            //SchemaUtils.drop(Audios)
+            //SchemaUtils.drop(com.inno.music.Audios)
             SchemaUtils.create(Audios)
             Audios.insert {
                 it[title] = audio.title

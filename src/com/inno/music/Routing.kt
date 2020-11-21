@@ -1,10 +1,13 @@
-import com.inno.music.audioRootFile
+package com.inno.music
+
 import io.ktor.application.*
+import io.ktor.html.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.html.*
 
 fun Application.routing(){
     routing {
@@ -30,6 +33,18 @@ fun Application.routing(){
             val temp = audioRootFile.listFiles()
             temp?.forEach {
                 println("child: ${it.name}")
+            }
+            call.respondHtml {
+                body {
+                    h1{ +"html" }
+
+                    ul {
+                        +"parent: ${audioRootFile.name}"
+                        temp?.forEach {
+                            li { +"child: ${it.name}" }
+                        }
+                    }
+                }
             }
         }
 

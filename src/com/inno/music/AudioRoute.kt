@@ -1,4 +1,5 @@
-import com.inno.music.audioRootFile
+package com.inno.music
+
 import io.ktor.application.*
 import io.ktor.html.*
 import io.ktor.http.*
@@ -16,7 +17,7 @@ import java.io.File
 val domain = "http://innomusic.herokuapp.com/audio/"
 
 fun Route.upload() {
-    get("upload") {
+    get("com.inno.music.upload") {
         call.respondHtml {
             head {
                 title("Upload file")
@@ -24,7 +25,7 @@ fun Route.upload() {
             body {
                 h2 { +"Upload audio" }
                 form(
-                    "upload",
+                    "com.inno.music.upload",
                     classes = "pure-form-stacked",
                     encType = FormEncType.multipartFormData,
                     method = FormMethod.post,
@@ -44,7 +45,7 @@ fun Route.upload() {
         }
     }
 
-    post("upload") {
+    post("com.inno.music.upload") {
         val multipart = call.receiveMultipart()
         val audioController = AudioController()
 
@@ -90,7 +91,7 @@ fun Route.upload() {
 }
 
 fun Route.download() {
-    get("download/{id}") {
+    get("com.inno.music.download/{id}") {
         val id = (call.parameters["id"] ?: "0").toInt()
         val audioController = AudioController()
         val audio = audioController.download(id)
@@ -103,8 +104,8 @@ fun Route.download() {
             header(HttpHeaders.ContentDisposition,
                 ContentDisposition.Attachment
                     .withParameter(ContentDisposition.Parameters.FileName,
-                        domain+"direct/${id}").toString())
-        }.call.respond(audio.copy(path = domain+"direct/${id}"))
+                        domain +"direct/${id}").toString())
+        }.call.respond(audio.copy(path = domain +"direct/${id}"))
 
     }
 
@@ -148,7 +149,7 @@ fun Route.deleteAll() {
         withContext(Dispatchers.IO) {
             val audioController = AudioController()
             audioController.removeAll()
-            call.respondRedirect("upload")
+            call.respondRedirect("com.inno.music.upload")
         }
     }
 }
