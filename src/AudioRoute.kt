@@ -109,14 +109,16 @@ fun Route.download() {
     }
 
     get("/audio/download/dir/{id}"){
-        val id = (call.parameters["id"] ?: "0").toInt()
-        val audioController = AudioController()
-        val audio = audioController.download(id)
-        println("dir id: $id")
-        println("dir path: ${audio.path}")
-        val temp = File(audio.path)
-        println("dir path is exis: ${temp.exists()}")
-        call.respondBytes(temp.inputStream().readBytes(), ContentType.Audio.Any)
+        withContext(Dispatchers.IO){
+            val id = (call.parameters["id"] ?: "0").toInt()
+            val audioController = AudioController()
+            val audio = audioController.download(id)
+            println("dir id: $id")
+            println("dir path: ${audio.path}")
+            val temp = File(audio.path)
+            println("dir path is exis: ${temp.exists()}")
+            call.respondBytes(temp.inputStream().readBytes(), ContentType.Audio.Any)
+        }
     }
 
     get("list") {
