@@ -1,5 +1,6 @@
 import com.inno.music.Download
 import com.inno.music.Upload
+import com.inno.music.audioRootFile
 import io.ktor.application.*
 import io.ktor.html.*
 import io.ktor.http.*
@@ -21,109 +22,107 @@ import kotlinx.css.h2
 import kotlinx.html.*
 import java.io.File
 
-fun Route.upload(){
-        get<Upload> { upload ->
-            call.respondHtml {
-                head {
-                    title("Upload file")
-                }
+fun Route.upload() {
+    get<Upload> { upload ->
+        call.respondHtml {
+            head {
+                title("Upload file")
+            }
 
-                body{
-                    h2 { +"Upload audio" }
+            body {
+                h2 { +"Upload audio" }
 
-                    form(
-                        "/audio/upload/${upload.type}",
-                        classes = "pure-form-stacked",
-                        encType = FormEncType.multipartFormData,
-                        method = FormMethod.post,
-                    ) {
-                        acceptCharset = "utf-8"
+                form(
+                    "/audio/upload/${upload.type}",
+                    classes = "pure-form-stacked",
+                    encType = FormEncType.multipartFormData,
+                    method = FormMethod.post,
+                ) {
+                    acceptCharset = "utf-8"
 
-                        label {
-                            htmlFor = "title"; +"Title:"
-                            textInput { name = "title"; id = "title" }
-                        }
-
-                        br()
-                        fileInput { name = "file" }
-                        br()
-
-                        submitInput(classes = "pure-button pure-button-primary") { value = "Upload" }
+                    label {
+                        htmlFor = "title"; +"Title:"
+                        textInput { name = "title"; id = "title" }
                     }
+
+                    br()
+                    fileInput { name = "file" }
+                    br()
+
+                    submitInput(classes = "pure-button pure-button-primary") { value = "Upload" }
                 }
             }
         }
+    }
 
-        post("audio/upload/post"){
-                val multipart = call.receiveMultipart()
-                val audioController = AudioController()
-
-                var title = ""
-                var audio: AudioFile? = AudioFile()
-
-                multipart.forEachPart { part ->
-                    when (part) {
-                        is PartData.FormItem -> {
-                          /*  if (part.name == "title")
-                                audio?.copy(title = part.value)*/
-                        }
-                        is PartData.FileItem -> {
-                            val ext = File(part.originalFileName).extension.also { println("ext: $it") }
-                            println("origfilename: "+part.originalFileName)
-
-                            audio = audio?.copy(
-                                title = part.originalFileName.toString(),
-                                data = part.streamProvider.invoke().readBytes()
-                            )
-                        }
-                        is PartData.BinaryItem -> {
-                            println("binary item")
-                        }
-                    }
-                    part.dispose
-                }
-                audio.let {
-                    println("TITLE: ${audio?.title}")
-                    audioController.upload(audio!!)
-                    if (audio?.data != null)
-                        call.respondText { "Uploaded" }
-                    else
-                        call.respondText { "Error" }
-                }
-        }
-    post("audio/upload/form") {
+    post("audio/upload/post") {
         val multipart = call.receiveMultipart()
-        call.respondTextWriter {
-            if (!call.request.isMultipart()) {
-                appendln("Not a multipart request")
-            } else {
-                while (true) {
-                    val part = multipart.readPart() ?: break
-                    when (part) {
-                        is PartData.FormItem ->
-                            appendln("FormItem: ${part.name} = ${part.value}")
-                        is PartData.FileItem ->
-                            appendln("FileItem: ${part.name} -> ${part.originalFileName} of ${part.contentType}")
+        val audioController = AudioController()
+
+        var title = ""
+        var audio = AudioFile()
+
+        multipart.forEachPart { part ->
+            when (part) {
+                is PartData.FormItem -> {
+                    when (part.name) {
+                        "title" -> audio.title = part.value
+                        "type" -> audio.type = AudioType.SONG
                     }
-                    part.dispose()
+                }
+                is PartData.FileItem -> {
+                    val out = File(audioRootFile, part.originalFileName ?: "empty filename.mp3")
+                        .also { it.copyInputStreamToFile(part.streamProvider.invoke()) }//save to file
+                    //title, type
+
+                    audio = audio.copy(
+                        path = out.path,
+                    )
+                }
+                is PartData.BinaryItem -> {
+                    println("binary item")
                 }
             }
+            part.dispose
         }
-    }
-}
-fun Route.download(){
-    get<Download> {
-        withContext(Dispatchers.IO){
-            val audioController = AudioController()
-            val audio = audioController.download(it.title)
-            println("title: "+it.title)
-            println(audio.data == null)
-            audio.data?.let {  call.respondBytes(audio.data!!, ContentType.Audio.Any)}
+        audio.let {
+            println("TITLE: ${audio.path}")
+            val id = audioController.upload(audio)
+            if (audio.path.isNotEmpty() && id != null)
+                call.respondText { "Uploaded id: $id" }
+            else
+                call.respondText { "Error" }
         }
     }
 
-    get("/audio/list"){
-        withContext(Dispatchers.IO){
+}
+
+fun Route.download() {
+    get("/audio/download/{id}") {
+        withContext(Dispatchers.IO) {
+            val id = (call.parameters["id"] ?: "0").toInt()
+            val audioController = AudioController()
+            val audio = audioController.download(id)
+            println("title: $id")
+            call.respondFile(audioRootFile, audio.path, object : OutgoingContent.ByteArrayContent() {
+                override val contentType: ContentType get() = ContentType.Audio.Any
+                override val headers: Headers
+                    get() = Headers.build {
+                        append("id", id.toString())
+                        append("title", audio.title)
+                        append("type", audio.type.toString())
+                    }
+
+                override fun bytes(): ByteArray {
+                    return File(audioRootFile, audio.path).readBytes()
+                }
+
+            })
+        }
+    }
+
+    get("/audio/list") {
+        withContext(Dispatchers.IO) {
             val audioController = AudioController().list()
             call.respondHtml {
                 head {
@@ -132,7 +131,7 @@ fun Route.download(){
                 body {
                     audioController.forEach {
                         ul {
-                            li{
+                            li {
                                 text(it)
                             }
                         }
@@ -143,9 +142,13 @@ fun Route.download(){
     }
 }
 
-fun Route.deleteAll(){
-    get("/audio/removeAll"){
-        withContext(Dispatchers.IO){
+private fun ApplicationCall.respondFile(baseDir: File, fileName: String, configure: OutgoingContent.ByteArrayContent) {
+
+}
+
+fun Route.deleteAll() {
+    get("/audio/removeAll") {
+        withContext(Dispatchers.IO) {
             val audioController = AudioController()
             audioController.removeAll()
             call.respondRedirect("/audio/upload")

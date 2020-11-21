@@ -9,7 +9,6 @@ object Audios: Table(){
     val title = varchar("title", 100).uniqueIndex()
     val type = varchar("type", 20)
     val path = varchar("path", 100)
-    val data = binary("data")
 }
 
 object Users: Table(){

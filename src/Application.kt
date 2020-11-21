@@ -39,6 +39,7 @@ fun initDB(){
     hikariConfig.driverClassName = "org.postgresql.Driver"
     hikariConfig.username = credentials[0]
     hikariConfig.password = credentials[1]
+    println("aasdasdsa")
 
 
     val ds = HikariDataSource(hikariConfig)
@@ -63,6 +64,7 @@ fun initDB(){
       Database.connect(ds)*/
 }
 
+val audioRootFile = File("resources/audios")
 
 fun Application.main() {
     install(CORS){

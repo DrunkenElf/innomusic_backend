@@ -1,3 +1,5 @@
+import java.io.File
+
 data class User(
     val id: Int,
     val username: String,
@@ -12,9 +14,9 @@ data class UserPref(
 data class AudioFile(
     var id: Int = -1,
     var title: String = "",
-    val type: AudioType = AudioType.SONG,
+    var type: AudioType = AudioType.SONG,
     val path: String = "",
-    var data: ByteArray? = null,
+    val file: File? = null,
 )
 
 data class SongArtist(
