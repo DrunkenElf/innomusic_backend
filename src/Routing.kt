@@ -21,7 +21,7 @@ class Download(val title: String)
 
 fun Application.routing(){
     routing {
-        get("/"){
+        get("/asd"){
             call.respondText("Routing /")
         }
         route("/api"){
