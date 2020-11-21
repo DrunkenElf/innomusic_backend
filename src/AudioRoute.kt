@@ -101,7 +101,7 @@ fun Route.download() {
             header(HttpHeaders.ContentDisposition,
                 ContentDisposition.Attachment
                     .withParameter(ContentDisposition.Parameters.FileName,
-                        audio.path.replace("resources\\audios\\","")).toString())
+                        audio.path).toString())
         }.call.respond(audio)
 
     }
