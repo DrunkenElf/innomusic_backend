@@ -52,3 +52,8 @@ dataSource.driverClassName=org.postgresql.Driver
 
       val ds = HikariDataSource(hikariConfig)
       Database.connect(ds)*/
+
+
+      DATABASE_URL=
+      JDBC_DATABASE_URL=jdbc:postgresql://localhost:5432/testdb?user=postgres&password=admin
+      PORT=8080
