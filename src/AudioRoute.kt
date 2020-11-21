@@ -108,7 +108,7 @@ fun Route.download() {
 
     }
 
-    get("download/dir/{id}"){
+    get("/audio/download/dir/{id}"){
         val id = (call.parameters["id"] ?: "0").toInt()
         val audioController = AudioController()
         val audio = audioController.download(id)
