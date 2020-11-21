@@ -104,14 +104,16 @@ fun Route.download() {
                 ContentDisposition.Attachment
                     .withParameter(ContentDisposition.Parameters.FileName,
                         audio.path).toString())*/
-        }.call.respond(audio.copy(path = domain+"download/$id/dir"))
+        }.call.respond(audio.copy(path = domain+"download/dir/${id}"))
 
     }
 
-    get("download/{id}/dir"){
+    get("download/dir/{id}"){
         val id = (call.parameters["id"] ?: "0").toInt()
         val audioController = AudioController()
         val audio = audioController.download(id)
+        println("dir id: $id")
+        println("dir path: ${audio.path}")
         call.respondFile(File(audio.path))
     }
 
