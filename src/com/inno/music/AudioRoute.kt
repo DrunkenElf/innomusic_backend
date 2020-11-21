@@ -144,11 +144,11 @@ fun Route.download() {
 
 
 fun Route.deleteAll() {
-    get("removeAll") {
+    post("removeAll") {
         withContext(Dispatchers.IO) {
             val audioController = AudioController()
             audioController.removeAll()
-            call.respondRedirect("upload")
+            call.respondRedirect("/upload")
         }
     }
 }

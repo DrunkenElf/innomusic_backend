@@ -37,6 +37,7 @@ class AudioController {
     }
 
     fun removeAll() {
+        audioRootFile.listFiles()?.forEach { it.delete() }
         transaction {
             Audios.deleteAll()
         }
