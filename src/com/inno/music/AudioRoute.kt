@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.html.*
 import java.io.File
 
-val domain = "http://innomusic.herokuapp.com/audio/"
+val domain = "https://innomusic.herokuapp.com/audio/"
 
 fun Route.upload() {
     get("upload") {
@@ -97,6 +97,8 @@ fun Route.download() {
         val audio = audioController.download(id)
         println("title: $id")
         println("path: ${audio.path}")
+        val temp = File(audio.path)
+        println("dir path is exis: ${temp.exists()}")
         call.response.apply {
             header("id", id.toString())
             header("title", audio.title)
@@ -104,8 +106,9 @@ fun Route.download() {
             header(HttpHeaders.ContentDisposition,
                 ContentDisposition.Attachment
                     .withParameter(ContentDisposition.Parameters.FileName,
-                        domain +"direct/${id}").toString())
-        }.call.respond(audio.copy(path = domain +"direct/${id}"))
+                        "${audio.title}.mp3").toString())
+        //}.call.respond(audio.copy(path = domain +"direct/${id}"))
+        }.call.respond(LocalFileContent(temp, ContentType.Audio.MPEG))
 
     }
 
@@ -114,11 +117,7 @@ fun Route.download() {
             val id = (call.parameters["id"] ?: "0").toInt()
             val audioController = AudioController()
             val audio = audioController.download(id)
-            println("dir id: $id")
-            println("dir path: ${audio.path}")
-            val temp = File(audio.path)
-            println("dir path is exis: ${temp.exists()}")
-            call.respondBytes(temp.inputStream().readBytes(), ContentType.Audio.Any)
+            call.respond(audio)
         }
     }
 

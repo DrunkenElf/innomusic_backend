@@ -19,7 +19,8 @@ import java.io.File
 import java.time.Duration
 
 fun initDB(){
-    /*val config = HikariConfig("/hikari_web.properties")
+   /* val config = HikariConfig("/hikari_local.properties")
+    //val config = HikariConfig("/hikari_web.properties")
     val ds = HikariDataSource(config)
     Database.connect(ds)*/
     val hikariConfig = HikariConfig()
