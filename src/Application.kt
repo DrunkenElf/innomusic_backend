@@ -27,7 +27,7 @@ fun initDB(){
     val credentialsAndConnectionString = DATABASE_URL.split("@")
     val credentials = credentialsAndConnectionString[0].split("postgres://")[1].split(":")
     val connectionString = credentialsAndConnectionString[1]
-    hikariConfig.jdbcUrl = "jdbc:postgresql://$connectionString?sslmode=require"
+    hikariConfig.jdbcUrl = "jdbc:postgresql://$connectionString"
     hikariConfig.driverClassName = "org.postgresql.Driver"
     hikariConfig.username = credentials[0]
     hikariConfig.password = credentials[1]
