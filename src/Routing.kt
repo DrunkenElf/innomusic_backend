@@ -5,19 +5,12 @@ import UserController
 import deleteAll
 import download
 import io.ktor.application.*
-import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import upload
-
-@Location("/audio/upload/{type}")
-class Upload(val type: String)
-
-@Location("/audio/download/{title}")
-class Download(val title: String)
 
 fun Application.routing(){
     routing {
@@ -27,11 +20,13 @@ fun Application.routing(){
         route("/api"){
             user()
         }
-        upload()
 
-        download()
+        route("/audio"){
+            upload()
+            download()
+            deleteAll()
+        }
 
-        deleteAll()
 
         get("/list"){
             println("parent: ${audioRootFile.name}")
