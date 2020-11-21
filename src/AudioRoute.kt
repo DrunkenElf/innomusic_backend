@@ -102,7 +102,7 @@ fun Route.download() {
                 ContentDisposition.Attachment
                     .withParameter(ContentDisposition.Parameters.FileName,
                         audio.path).toString())
-        }.call.respond(audio)
+        }.call.respond(File(audio.path))
 
     }
 
