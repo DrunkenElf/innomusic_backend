@@ -25,7 +25,7 @@ fun Route.upload() {
             body {
                 h2 { +"Upload audio" }
                 form(
-                    "com.inno.music.upload",
+                    "upload",
                     classes = "pure-form-stacked",
                     encType = FormEncType.multipartFormData,
                     method = FormMethod.post,
@@ -65,8 +65,8 @@ fun Route.upload() {
                             withContext(Dispatchers.IO){
                                 if (!it.exists())
                                     it.createNewFile()
+                                it.copyInputStreamToFile(part.streamProvider.invoke())
                             }
-                            it.copyInputStreamToFile(part.streamProvider.invoke())
                         }
                     audio = audio.copy(
                         path = out.path,
