@@ -114,7 +114,8 @@ fun Route.download() {
         val audio = audioController.download(id)
         println("dir id: $id")
         println("dir path: ${audio.path}")
-        call.respondFile(audioRootFile, audio.path.replace("resources/audios",""))
+        val file = io.ktor.client.content.LocalFileContent(File(audio.path), ContentType.Audio.Any)
+        call.respond(file)
     }
 
     get("list") {
