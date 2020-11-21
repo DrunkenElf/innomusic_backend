@@ -5,7 +5,7 @@ class AudioController {
 
     suspend fun upload(audio: AudioFile): Int {
         return transaction {
-            SchemaUtils.drop(Audios)
+            //SchemaUtils.drop(Audios)
             SchemaUtils.create(Audios)
             Audios.insert {
                 it[title] = audio.title
