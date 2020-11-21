@@ -50,7 +50,6 @@ fun Application.main() {
         anyHost()
         allowCredentials = true
         allowNonSimpleContentTypes = true
-        maxAge = Duration.ofDays(1)
     }
     install(Locations) {
     }
