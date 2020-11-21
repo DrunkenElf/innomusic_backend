@@ -13,7 +13,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.html.*
 import java.io.File
 
-val domain = "https://innomusic.herokuapp.com/audio/"
+val domain = "http://innomusic.herokuapp.com/audio/"
 
 fun Route.upload() {
     get("upload") {
@@ -100,10 +100,10 @@ fun Route.download() {
             header("id", id.toString())
             header("title", audio.title)
             header("type", audio.type.toString())
-            /*header(HttpHeaders.ContentDisposition,
+            header(HttpHeaders.ContentDisposition,
                 ContentDisposition.Attachment
                     .withParameter(ContentDisposition.Parameters.FileName,
-                        audio.path).toString())*/
+                        domain+"download/dir/${id}").toString())
         }.call.respond(audio.copy(path = domain+"download/dir/${id}"))
 
     }
@@ -114,7 +114,7 @@ fun Route.download() {
         val audio = audioController.download(id)
         println("dir id: $id")
         println("dir path: ${audio.path}")
-        call.respondFile(File(audio.path))
+        call.respondFile(audioRootFile, audio.path.replace("resources/audios",""))
     }
 
     get("list") {
