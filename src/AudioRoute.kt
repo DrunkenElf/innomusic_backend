@@ -14,7 +14,7 @@ import kotlinx.html.*
 import java.io.File
 
 fun Route.upload() {
-    get("/upload") {
+    get("upload") {
         call.respondHtml {
             head {
                 title("Upload file")
@@ -22,7 +22,7 @@ fun Route.upload() {
             body {
                 h2 { +"Upload audio" }
                 form(
-                    "/upload",
+                    "upload",
                     classes = "pure-form-stacked",
                     encType = FormEncType.multipartFormData,
                     method = FormMethod.post,
@@ -42,7 +42,7 @@ fun Route.upload() {
         }
     }
 
-    post("/upload") {
+    post("upload") {
         val multipart = call.receiveMultipart()
         val audioController = AudioController()
 
@@ -88,7 +88,7 @@ fun Route.upload() {
 }
 
 fun Route.download() {
-    get("/download/{id}") {
+    get("download/{id}") {
         val id = (call.parameters["id"] ?: "0").toInt()
         val audioController = AudioController()
         val audio = audioController.download(id)
@@ -106,7 +106,7 @@ fun Route.download() {
 
     }
 
-    get("/list") {
+    get("list") {
         val audioController = AudioController().list()
         call.respondHtml {
             head {
@@ -129,11 +129,11 @@ fun Route.download() {
 
 
 fun Route.deleteAll() {
-    get("/removeAll") {
+    get("removeAll") {
         withContext(Dispatchers.IO) {
             val audioController = AudioController()
             audioController.removeAll()
-            call.respondRedirect("/upload")
+            call.respondRedirect("upload")
         }
     }
 }
