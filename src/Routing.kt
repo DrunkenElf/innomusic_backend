@@ -14,8 +14,11 @@ import upload
 
 fun Application.routing(){
     routing {
-        get("/asd"){
+        get("/"){
             call.respondText("Routing /")
+        }
+        get("/asd"){
+            call.respondText("asd бабабуй /")
         }
         route("/api"){
             user()
