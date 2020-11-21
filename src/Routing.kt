@@ -33,6 +33,14 @@ fun Application.routing(){
 
         deleteAll()
 
+        get("/list"){
+            println("parent: ${audioRootFile.name}")
+            val temp = audioRootFile.listFiles()
+            temp?.forEach {
+                println("child: ${it.name}")
+            }
+        }
+
     }
 }
 
